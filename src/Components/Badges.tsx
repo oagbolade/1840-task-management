@@ -1,8 +1,9 @@
+import { Priority, Status } from '@/Types/types'
 import { LockClock } from '@mui/icons-material'
 import React from 'react'
 
 
-export const StatusLabel = ({ status }: { status: 'To Do' | 'In Progress' | 'Done' }) => {
+export const StatusLabel = ({ status }: { status: Status }) => {
 
     return (
         <div className='mt-1.5'>
@@ -13,7 +14,7 @@ export const StatusLabel = ({ status }: { status: 'To Do' | 'In Progress' | 'Don
     )
 }
 
-export const PriorityLabel = ({ priority }: { priority: 'High' | 'Medium' | 'Low' }) => {
+export const PriorityLabel = ({ priority }: { priority: Priority }) => {
 
     return (
         <div className='mt-1.5'>

@@ -1,25 +1,28 @@
 import { Delete, Edit } from '@mui/icons-material';
 import React from 'react';
 import { DuedateLabel, PriorityLabel, StatusLabel } from './Badges';
+import { Priority, Status } from '@/Types/types';
 
 type CardProps = {
     title: string;
     description: string;
-    priority: 'High' | 'Medium' | 'Low';
-    status: 'To Do' | 'In Progress' | 'Done';
+    priority: Priority;
+    status: Status;
     dueDate: string;
+    onDelete: () => void;
+    onEdit: () => void;
 }
 
-export function Card({title, description, priority, status, dueDate }: CardProps) {
+export function Card({title, description, priority, status, dueDate, onDelete, onEdit }: CardProps) {
     return (
         <div className="w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm mb-5">
             <div className='flex justify-between'>
                 <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{title}</h5>
                 <div className='flex gap-2'>
-                    <p>
+                    <p onClick={onDelete}>
                         <Delete color='error' />
                     </p>
-                    <p>
+                    <p onClick={onEdit}>
                         <Edit color='success' />
                     </p>
                 </div>
