@@ -15,6 +15,7 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<Status>('');
   const [priorityFilter, setPriorityFilter] = useState<Priority>('');
+  const [sortBy, setSortBy] = useState<string>('');
   const [tasks, setTasks] = useState<Tasks[]>([]);
   const [currentTask, setCurrentTask] = useState<Tasks | null>(null);
   const [currentTaskIndex, setCurrentTaskIndex] = useState<number | null>(null);
@@ -50,6 +51,10 @@ export default function Home() {
 
   const handlePriorityChange = useCallback((priority: Priority) => {
     setPriorityFilter(priority);
+  }, []);
+
+  const handleSortChange = useCallback((sortBy: string) => {
+    setSortBy(sortBy);
   }, []);
 
   const handleDeleteTask = useCallback((index: number) => {
@@ -92,20 +97,31 @@ export default function Home() {
     });
   }, []);
 
-  const filteredTasks = useMemo(() => tasks.filter(task =>
-    (task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      task.description.toLowerCase().includes(searchTerm.toLowerCase())) &&
-    (statusFilter === '' || task.status === statusFilter) &&
-    (priorityFilter === '' || task.priority === priorityFilter)
-  ), [tasks, searchTerm, statusFilter, priorityFilter]);
+  const filteredTasks = useMemo(() => {
+    const sortedTasks = [...tasks];
+
+    if (sortBy === 'dueDate') {
+      sortedTasks.sort((a, b) => new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime());
+    } else if (sortBy === 'priority') {
+      const priorityOrder = { 'High': 3, 'Medium': 2, 'Low': 1 };
+      sortedTasks.sort((a, b) => priorityOrder[b.priority as keyof typeof priorityOrder] - priorityOrder[a.priority as keyof typeof priorityOrder]);
+    }
+
+    return sortedTasks.filter(task =>
+      (task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        task.description.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      (statusFilter === '' || task.status === statusFilter) &&
+      (priorityFilter === '' || task.priority === priorityFilter)
+    );
+  }, [tasks, searchTerm, statusFilter, priorityFilter, sortBy]);
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <NavBar />
       <div className="max-w-2xl mx-auto mt-10 p-4 sm:p-6 lg:p-8">
         <SearchBar onSearch={handleSearch} />
-        <div className="flex justify-between items-center mb-4">
-          <Dropdown onStatusChange={handleStatusChange} onPriorityChange={handlePriorityChange} />
+        <div className="flex justify-between items-center">
+          <Dropdown onStatusChange={handleStatusChange} onPriorityChange={handlePriorityChange} onSortChange={handleSortChange} />
           <div>
             <Button onClick={toggleModal} />
           </div>
