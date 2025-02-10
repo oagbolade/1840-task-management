@@ -6,9 +6,10 @@ type ModalProps = {
     closeModal: () => void;
     onAddTask: (task: { title: string, description: string, priority: Priority, status: Status, dueDate: string }) => void;
     task?: { title: string, description: string, priority: Priority, status: Status, dueDate: string } | null;
+    isViewMode: boolean;
 };
 
-export function Modal({ closeModal, onAddTask, task }: ModalProps) {
+export function Modal({ closeModal, onAddTask, task, isViewMode }: ModalProps) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [priority, setPriority] = useState<Priority>('');
@@ -48,14 +49,16 @@ export function Modal({ closeModal, onAddTask, task }: ModalProps) {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                <h2 className="text-xl font-bold mb-4 text-gray-700">{task ? 'Edit Task' : 'Add Task'}</h2>
+            <div className="bg-white p-6 rounded-lg shadow-lg w-96 max-w-full">
+                <h2 className="text-xl font-bold mb-4 text-gray-700">{isViewMode ? `Viewing: ${title}` : task ? 'Edit Task' : 'Add Task'}</h2>
                 <input 
                     type="text" 
                     placeholder="Title" 
                     value={title} 
                     onChange={(e) => setTitle(e.target.value)} 
                     className="mb-2 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-500" 
+                    disabled={isViewMode}
+                    aria-label="Task title"
                 />
                 {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
                 <textarea 
@@ -63,12 +66,15 @@ export function Modal({ closeModal, onAddTask, task }: ModalProps) {
                     value={description} 
                     onChange={(e) => setDescription(e.target.value)} 
                     className="mb-2 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-500" 
+                    disabled={isViewMode}
+                    aria-label="Task description"
                 ></textarea>
                 {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
                 <select 
                     value={priority} 
                     onChange={(e) => setPriority(e.target.value as Priority)} 
                     className="mb-2 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-500"
+                    aria-label="Task priority"
                 >
                     <option value="">Priority</option>
                     <option value="High">High</option>
@@ -80,6 +86,7 @@ export function Modal({ closeModal, onAddTask, task }: ModalProps) {
                     value={status} 
                     onChange={(e) => setStatus(e.target.value as Status)} 
                     className="mb-2 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-500"
+                    aria-label="Task status"
                 >
                     <option value="">Status</option>
                     <option value="To Do">To Do</option>
@@ -92,6 +99,8 @@ export function Modal({ closeModal, onAddTask, task }: ModalProps) {
                     value={dueDate} 
                     onChange={(e) => setDueDate(e.target.value)} 
                     className="text-gray-500 mb-2 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                    disabled={isViewMode}
+                    aria-label="Task due date"
                 />
                 {errors.dueDate && <p className="text-red-500 text-sm">{errors.dueDate}</p>}
                 <div className="flex justify-end gap-2">
