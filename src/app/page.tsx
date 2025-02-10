@@ -9,6 +9,7 @@ import { Priority, Status, Tasks } from "@/Types/types";
 import { getTasksFromLocalStorage, saveTasksToLocalStorage } from "@/utils/localStorage";
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import { NavBar } from "@/Components/NavBar";
+import { useAuth } from "@/Hooks/useAuth";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,8 +20,16 @@ export default function Home() {
   const [tasks, setTasks] = useState<Tasks[]>([]);
   const [currentTask, setCurrentTask] = useState<Tasks | null>(null);
   const [currentTaskIndex, setCurrentTaskIndex] = useState<number | null>(null);
+  const [isViewingMode, setIsViewingMode] = useState<boolean>(false);
+    const { isAuth } = useAuth();
 
   useEffect(() => {
+    // TODO: convert this to use context state management
+    // console.log('isAuth:', isAuth);
+    // if (isAuth === false) {
+    //   window.location.href = '/login';
+    // }
+
     try {
       const storedTasks = getTasksFromLocalStorage();
       setTasks(storedTasks);
@@ -61,6 +70,10 @@ export default function Home() {
     setTasks(prevTasks => prevTasks.filter((_, i) => i !== index));
   }, []);
 
+  const handleViewMode = useCallback((viewType: 'edit' | 'view') => {
+    setIsViewingMode(viewType === 'view');
+  }, []);
+
   const handleAddTask = useCallback((newTask: Tasks) => {
     setTasks(prevTasks => {
       if (currentTaskIndex !== null) {
@@ -77,12 +90,14 @@ export default function Home() {
   const handleEditTask = useCallback((index: number) => {
     setCurrentTask(tasks[index]);
     setCurrentTaskIndex(index);
+    handleViewMode('edit');
     setIsModalOpen(true);
   }, [tasks]);
 
   const handleViewTask = useCallback((index: number) => {
     setCurrentTask(tasks[index]);
     setCurrentTaskIndex(index);
+    handleViewMode('view');
     setIsModalOpen(true);
   }, [tasks]);
 
@@ -172,7 +187,7 @@ export default function Home() {
             closeModal={toggleModal}
             onAddTask={handleAddTask}
             task={currentTask}
-            isViewMode={currentTaskIndex !== null}
+            isViewMode={isViewingMode}
           />
         }
       </div>

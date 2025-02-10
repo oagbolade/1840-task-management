@@ -10,7 +10,7 @@ type DropdownProps = {
 
 export function Dropdown({ onStatusChange, onPriorityChange, onSortChange }: DropdownProps) {
     return (
-        <div className="flex justify-start gap-20 mb-10">
+        <div className="md:flex justify-start gap-20 mb-10">
             <div className="flex justify-start gap-3 mb-10">
                 <div className="w-30">
                     <label className="text-gray-900">Filter by:</label>
@@ -34,9 +34,9 @@ export function Dropdown({ onStatusChange, onPriorityChange, onSortChange }: Dro
 
             <div className="flex justify-start gap-3 mb-10">
                 <div className="w-30">
-                    <label className="text-gray-900">Sort by(Desc):</label>
+                    <label className="text-gray-900">Sort(Desc):</label>
                     <select id="sort" className="mt-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" onChange={(e) => onSortChange(e.target.value)} aria-label="Sort tasks">
-                        <option value="">Sort By</option>
+                        <option value="">Sort</option>
                         <option value="dueDate">Due Date</option>
                         <option value="priority">Priority</option>
                     </select>

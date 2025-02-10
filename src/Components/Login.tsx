@@ -3,12 +3,14 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { loginCredentials } from '@/mocks/login';
 import { CompanyLogo } from './Images';
+import { useAuth } from '@/Hooks/useAuth';
 
 export const Login = () => {
     const router = useRouter();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const { login } = useAuth();
 
     const handleLogin = (e: { preventDefault: () => void; }) => {
         e.preventDefault();
@@ -18,6 +20,7 @@ export const Login = () => {
         }
         
         if (username === loginCredentials.username && password === loginCredentials.password) {
+            login();
             router.push('/');
         } else {
             setError('Invalid username or password');

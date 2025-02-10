@@ -1,12 +1,14 @@
 import React from 'react'
 import { useRouter } from 'next/navigation';
 import { CompanyLogo } from './Images'
+import { useAuth } from '@/Hooks/useAuth';
 
 export const NavBar = () => {
     const router = useRouter();
+    const { logout } = useAuth();
 
     const handleLogout = () => {
-        localStorage.clear();
+        logout();
         router.push('/login');
     };
 
@@ -34,7 +36,7 @@ export const NavBar = () => {
                             <a href="#" className="block py-2 px-3 md:p-0 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700"></a>
                         </li>
                         <li>
-                            <button onClick={handleLogout} className="block py-2 px-3 md:p-0 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700">Logout</button>
+                            <button onClick={() => handleLogout()} className="block py-2 px-3 md:p-0 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700">Logout</button>
                         </li>
                     </ul>
                 </div>
