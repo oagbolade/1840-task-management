@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, Suspense } from "react";
 import { Button } from "@/Components/Button";
 import { Card } from "@/Components/Card";
 import { Dropdown } from "@/Components/Dropdown";
@@ -100,7 +100,7 @@ export default function Home() {
   ), [tasks, searchTerm, statusFilter, priorityFilter]);
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <NavBar />
       <div className="max-w-2xl mx-auto mt-10 p-4 sm:p-6 lg:p-8">
         <SearchBar onSearch={handleSearch} />
@@ -114,7 +114,15 @@ export default function Home() {
           <Droppable droppableId="tasks">
             {(provided) => (
               <div {...provided.droppableProps} ref={provided.innerRef}>
-                {filteredTasks.length > 0 ? (
+                {tasks.length === 0 ? (
+                  <div className="text-center text-gray-500 mt-10">
+                    No tasks have been created.
+                  </div>
+                ) : filteredTasks.length === 0 ? (
+                  <div className="text-center text-gray-500 mt-10">
+                    No tasks found based on filters.
+                  </div>
+                ) : (
                   filteredTasks.map((task, index) => (
                     <Draggable key={index} draggableId={String(index)} index={index}>
                       {(provided) => (
@@ -137,10 +145,6 @@ export default function Home() {
                       )}
                     </Draggable>
                   ))
-                ) : (
-                  <div className="text-center text-gray-500 mt-10">
-                    No tasks found, please add a task.
-                  </div>
                 )}
                 {provided.placeholder}
               </div>
@@ -156,6 +160,6 @@ export default function Home() {
           />
         }
       </div>
-    </>
+    </Suspense>
   );
 }
